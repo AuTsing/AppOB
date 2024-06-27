@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -39,7 +40,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class MainActivity : ComponentActivity() {
     private val appsStateFlow: MutableStateFlow<List<AppInfo>> = MutableStateFlow(emptyList())
@@ -93,15 +93,7 @@ class MainActivity : ComponentActivity() {
 private fun loadApps(context: Context): List<AppInfo> {
     return context.packageManager.getInstalledPackages(PackageManager.MATCH_ALL)
         .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 }
-        .map {
-            AppInfo(
-                packageName = it.packageName,
-                label = it.applicationInfo.loadLabel(context.packageManager).toString(),
-                versionName = it.versionName,
-                versionCode = it.versionCode,
-                icon = context.packageManager.getApplicationIcon(it.applicationInfo),
-            )
-        }
+        .map { AppInfo.fromPackageInfo(context, it) }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,6 +109,8 @@ private fun AppListTopBar(
 
 @Composable
 private fun AppListScreen(apps: List<AppInfo>) {
+    val context = LocalContext.current
+
     LazyColumn {
         items(apps) {
             ListItem(
@@ -143,7 +137,9 @@ private fun AppListScreen(apps: List<AppInfo>) {
                         modifier = Modifier.padding(vertical = 12.dp),
                     )
                 },
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable {
+                    AppDetailActivity.startActivity(context, it)
+                },
             )
         }
     }
