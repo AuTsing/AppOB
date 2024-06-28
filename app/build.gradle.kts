@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -12,7 +15,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -20,13 +23,31 @@ android {
         }
     }
 
+    signingConfigs {
+        getByName("debug") {
+            val properties = gradleLocalProperties(rootDir, providers)
+            storeFile = file(properties.getProperty("STORE_FILE"))
+            storePassword = properties.getProperty("STORE_PASSWORD")
+            keyAlias = properties.getProperty("KEY_ALIAS")
+            keyPassword = properties.getProperty("KEY_PASSWORD")
+        }
+        create("release") {
+            val properties = gradleLocalProperties(rootDir, providers)
+            storeFile = file(properties.getProperty("STORE_FILE"))
+            storePassword = properties.getProperty("STORE_PASSWORD")
+            keyAlias = properties.getProperty("KEY_ALIAS")
+            keyPassword = properties.getProperty("KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -46,6 +67,13 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    applicationVariants.all {
+        outputs.map { it as BaseVariantOutputImpl }
+            .forEach {
+                it.outputFileName = "${rootProject.name}_v${versionName}_${buildType.name}.apk"
+            }
     }
 }
 
