@@ -2,4 +2,12 @@
     <string name="app_name">AppOB</string>
 
     <string name="label_app_list">AppList</string>
+    <string name="label_package_name">Package name</string>
+    <string name="label_label">Label</string>
+    <string name="label_version_name">Version</string>
+    <string name="label_version_code">Version code</string>
+    <string name="label_apk_path">Apk path</string>
+    <string name="label_data_path">Data path</string>
+    <string name="label_size">Apk size</string>
+    <string name="label_uid">UID</string>
 </resources>

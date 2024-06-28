@@ -48,4 +48,16 @@ data class AppInfo(
             return "${"%.2f".format(readable)}${unitIter.current()}"
         }
     }
+
+    fun getKvs(context: Context): Map<String, String> {
+        return mapOf(
+            context.getString(R.string.label_label) to label,
+            context.getString(R.string.label_version_name) to versionName,
+            context.getString(R.string.label_version_code) to versionCode.toString(),
+            context.getString(R.string.label_size) to sizeDisplay,
+            context.getString(R.string.label_data_path) to dataPath,
+            context.getString(R.string.label_apk_path) to apkPath,
+            context.getString(R.string.label_uid) to uid.toString(),
+        )
+    }
 }

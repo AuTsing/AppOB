@@ -7,14 +7,19 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -27,12 +32,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.autsing.appob.ui.theme.AppOBTheme
 import kotlinx.coroutines.Dispatchers
@@ -196,7 +203,44 @@ private fun AppDetailTopBar(
 private fun AppDetailScreen(
     appInfo: AppInfo,
 ) {
-    Text(appInfo.toString())
+    val context = LocalContext.current
+
+    LazyColumn {
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = appInfo.label,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                supportingContent = {
+                    Text(appInfo.versionName)
+                },
+                leadingContent = {
+                    Image(
+                        bitmap = appInfo.icon.toBitmap().asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .size(64.dp),
+                    )
+                },
+            )
+        }
+        items(appInfo.getKvs(context).toList()) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = it.first,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                supportingContent = { Text(it.second) },
+                modifier = Modifier.clickable { },
+            )
+        }
+    }
 }
 
 @Composable

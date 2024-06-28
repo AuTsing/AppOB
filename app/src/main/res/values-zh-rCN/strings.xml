@@ -3,4 +3,12 @@
     <string name="app_name">AppOB</string>
 
     <string name="label_app_list">应用列表</string>
+    <string name="label_package_name">包名</string>
+    <string name="label_label">名称</string>
+    <string name="label_version_name">版本</string>
+    <string name="label_version_code">版本号</string>
+    <string name="label_apk_path">安装包路径</string>
+    <string name="label_data_path">数据路径</string>
+    <string name="label_size">安装包大小</string>
+    <string name="label_uid">UID</string>
 </resources>
