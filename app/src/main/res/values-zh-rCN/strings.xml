@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AppOB</string>
+
+    <string name="label_app_list">应用列表</string>
+</resources>
